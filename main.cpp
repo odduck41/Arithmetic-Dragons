@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main() {
-    sf::RenderWindow window({928, 750}, "Dragons");
+    sf::RenderWindow window({928, 600}, "Dragons");
 
     std::vector<sf::Texture> textures(11);
     std::vector<sf::Sprite> backgrounds(11);
@@ -19,7 +19,7 @@ int main() {
         texture.setRepeated(true);
         textures[i] = texture;
         backgrounds[i].setTexture(textures[i]);
-        backgrounds[i].setPosition({0, 750 - 793});
+        backgrounds[i].setPosition({0, 600 - 793});
     }
     std::ranges::reverse(backgrounds);
 
@@ -28,7 +28,7 @@ int main() {
 
     sf::Sprite hero(hero_texture);
     hero.setTextureRect({0, 32 * 3, 32, 32});
-    hero.setPosition(100, 750 - (793 - 696)); // (928 - 696)
+    hero.setPosition(100, 600 - (793 - 696)); // (928 - 696)
     int hero_run = 0;
     // int hero_idle = 0;
 
@@ -36,7 +36,7 @@ int main() {
     enemy_texture.loadFromFile("../textures/enemy_mirrored.png");
     sf::Sprite enemy(enemy_texture);
     enemy.setTextureRect({32 * 3, 32 * 5, 32, 32});
-    enemy.setPosition(928 + 11, 750 - (793 - 696));
+    enemy.setPosition(928 + 11, 600 - (793 - 696));
 
 
     sf::Clock clock;
