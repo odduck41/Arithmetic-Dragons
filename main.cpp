@@ -26,10 +26,17 @@ int main() {
     hero_texture.loadFromFile("../textures/hero.png");
 
     sf::Sprite hero(hero_texture);
-    hero.setTextureRect({0, 0, 32, 32});
-    hero.setPosition(100, 694);
+    hero.setTextureRect({0, 32 * 3, 32, 32});
+    hero.setPosition(100, 696);
     int hero_run = 0;
     // int hero_idle = 0;
+
+    sf::Texture enemy_texture;
+    enemy_texture.loadFromFile("../textures/enemy_mirrored.png");
+    sf::Sprite enemy(enemy_texture);
+    enemy.setTextureRect({32 * 3, 32 * 5, 32, 32});
+    enemy.setPosition(928 + 11, 696);
+
 
     sf::Clock clock;
     sf::Time last = clock.getElapsedTime();
@@ -67,7 +74,7 @@ int main() {
         //     }
         // }
         if (const sf::Time now = clock.getElapsedTime();
-        now.asMilliseconds() - last.asMilliseconds() >= 41.667) {
+        now.asMilliseconds() - last.asMilliseconds() >= 41.667 && enemy.getPosition().x > 700) {
             for (size_t i = 0; i < backgrounds.size(); ++i) {
                 auto rect = backgrounds[i].getTextureRect();
                 rect.left += (static_cast<int>(i) + 1);
@@ -79,7 +86,9 @@ int main() {
             hero_rect.left = 32 * ((++hero_run) %= 8);
             hero.setTextureRect(hero_rect);
             last = now;
+            enemy.setPosition(enemy.getPosition() - sf::Vector2f{11, 0});
         }
+        window.draw(enemy);
         window.draw(hero);
         window.display();
     }
