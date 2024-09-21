@@ -31,11 +31,12 @@ int main() {
     hero.setPosition(100, 600 - (793 - 696)); // (928 - 696)
     int hero_run = 0;
     int hero_idle = 0;
+    int troll_idle = 0;
 
     sf::Texture enemy_texture;
-    enemy_texture.loadFromFile("../textures/enemy_mirrored.png");
+    enemy_texture.loadFromFile("../textures/troll.png");
     sf::Sprite enemy(enemy_texture);
-    enemy.setTextureRect({32 * 3, 32 * 5, 32, 32});
+    enemy.setTextureRect({0, 0, 32, 32});
     enemy.setPosition(928 + 11, 600 - (793 - 696));
 
 
@@ -104,6 +105,20 @@ int main() {
 
             hero.setTextureRect(hero_rect);
             last = now;
+
+
+            auto troll_rect = enemy.getTextureRect();
+            ++troll_idle;
+            troll_idle %= 5;
+            if (troll_idle < 2) {
+                troll_rect.top = 0;
+                troll_rect.left = 32 * troll_idle;
+            } else if (troll_idle <= 4) {
+                troll_rect.top = 32;
+                troll_rect.left = 32 * (troll_idle % 2);
+            }
+
+            enemy.setTextureRect(troll_rect);
         }
         window.draw(enemy);
         window.draw(hero);
