@@ -4,7 +4,7 @@
 #include <iostream>
 
 int main() {
-    sf::RenderWindow window({928, 793}, "Dragons");
+    sf::RenderWindow window({768, 793}, "Dragons");
 
     std::vector<sf::Texture> textures(11);
     std::vector<sf::Sprite> backgrounds(11);
@@ -19,6 +19,7 @@ int main() {
         texture.setRepeated(true);
         textures[i] = texture;
         backgrounds[i].setTexture(textures[i]);
+        // backgrounds[i].setPosition({0, 768 - 928});
     }
     std::ranges::reverse(backgrounds);
 
@@ -27,7 +28,7 @@ int main() {
 
     sf::Sprite hero(hero_texture);
     hero.setTextureRect({0, 32 * 3, 32, 32});
-    hero.setPosition(100, 696);
+    hero.setPosition(100, 696); // (928 - 696)
     int hero_run = 0;
     // int hero_idle = 0;
 
