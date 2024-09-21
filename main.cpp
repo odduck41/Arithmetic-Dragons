@@ -42,10 +42,7 @@ int main() {
                 window.close();
                 return 0;
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)
-                && event.type == sf::Event::KeyPressed) {
-                ;
-            }
+
         }
         window.clear();
         for (auto& back: backgrounds) {
