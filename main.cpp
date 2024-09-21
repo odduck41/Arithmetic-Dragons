@@ -28,11 +28,11 @@ int main() {
     sf::Sprite hero(hero_texture);
     hero.setTextureRect({0, 0, 32, 32});
     hero.setPosition(100, 694);
-    int hero_run = -1;
+    int hero_run = 0;
     // int hero_idle = 0;
 
-    // sf::Clock clock;
-    // sf::Time last = clock.getElapsedTime();
+    sf::Clock clock;
+    sf::Time last = clock.getElapsedTime();
 
     while (window.isOpen()) {
         sf::Event event{};
@@ -44,19 +44,7 @@ int main() {
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)
                 && event.type == sf::Event::KeyPressed) {
-                for (size_t i = 0; i < backgrounds.size(); ++i) {
-                    auto rect = backgrounds[i].getTextureRect();
-                    rect.left += (static_cast<int>(i) + 1);
-                    backgrounds[i].setTextureRect(rect);
-                }
-
-                hero_idle = 0;
-                auto hero_rect = hero.getTextureRect();
-                hero_rect.top = 32 * 3;
-                hero_rect.left = 32 * ((++hero_run) %= 8);
-                hero.setTextureRect(hero_rect);
-            } else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-                hero_run = -1;
+                ;
             }
         }
         window.clear(sf::Color::White);
@@ -81,6 +69,20 @@ int main() {
         //         last = now;
         //     }
         // }
+        if (const sf::Time now = clock.getElapsedTime();
+        now.asMilliseconds() - last.asMilliseconds() >= 41.667) {
+            for (size_t i = 0; i < backgrounds.size(); ++i) {
+                auto rect = backgrounds[i].getTextureRect();
+                rect.left += (static_cast<int>(i) + 1);
+                backgrounds[i].setTextureRect(rect);
+            }
+
+            auto hero_rect = hero.getTextureRect();
+            hero_rect.top = 32 * 3;
+            hero_rect.left = 32 * ((++hero_run) %= 8);
+            hero.setTextureRect(hero_rect);
+            last = now;
+        }
         window.draw(hero);
         window.display();
     }
