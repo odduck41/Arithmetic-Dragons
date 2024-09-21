@@ -47,7 +47,7 @@ int main() {
                 ;
             }
         }
-        window.clear(sf::Color::White);
+        window.clear();
         for (auto& back: backgrounds) {
             window.draw(back);
         }
