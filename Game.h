@@ -75,7 +75,7 @@ namespace gm {
 
     class Black final : public Dragon {
       public:
-        explicit Green(Model, long long, long long);
+        explicit Black(Model, long long, long long);
         [[nodiscard]] bool isEnemy() const override;
     };
 }
