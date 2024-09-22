@@ -75,6 +75,9 @@ int main() {
         //         last = now;
         //     }
         // }
+
+
+
         if (const sf::Time now = clock.getElapsedTime();
         now.asMilliseconds() - last.asMilliseconds() >= 41.667 && enemy.getPosition().x > 700) {
             for (size_t i = 0; i < backgrounds.size(); ++i) {
@@ -106,19 +109,6 @@ int main() {
             hero.setTextureRect(hero_rect);
             last = now;
 
-
-            auto troll_rect = enemy.getTextureRect();
-            ++troll_idle;
-            troll_idle %= 5;
-            if (troll_idle < 2) {
-                troll_rect.top = 0;
-                troll_rect.left = 32 * troll_idle;
-            } else if (troll_idle <= 4) {
-                troll_rect.top = 32;
-                troll_rect.left = 32 * (troll_idle % 2);
-            }
-
-            enemy.setTextureRect(troll_rect);
         }
         window.draw(enemy);
         window.draw(hero);
