@@ -11,16 +11,29 @@ namespace gm {
         Model(Model&&) noexcept;
         Model& operator=(Model);
 
-        void idle();
-        void run();
-        void die();
-
         ~Model() override;
       private:
         sf::Texture* texture_{};
-        int idle_{};
-        int run_{};
-        int die_{};
+    };
+
+    struct IIdler {
+      virtual void idle() = 0;
+      virtual ~IIdler() = default;
+    };
+
+    struct IRunner {
+        virtual void run() = 0;
+        virtual ~IRunner() = default;
+    };
+
+    struct IDying {
+        virtual void die() = 0;
+        virtual ~IDying() = default;
+    };
+
+    struct ISpeaker {
+      virtual void speak() = 0;
+      virtual ~ISpeaker() = default;
     };
 
     class Unit {
@@ -34,10 +47,6 @@ namespace gm {
         void damage(const unsigned long long&);
         void attack(Unit&) const;
 
-        void idle() const;
-        void run() const;
-        void die() const;
-
         void draw(sf::RenderWindow&) const;
         virtual ~Unit();
 
@@ -48,17 +57,31 @@ namespace gm {
         long long attack_ = 20;
     };
 
-    class Hero final : public Unit {
+    class Hero final : public Unit, IIdler, IRunner, IDying {
       public:
         Hero(Model, long long, long long);
         [[nodiscard]] bool isEnemy() const override;
+
+        void idle() override;
+        void run() override;
+        void die() override;
+      private:
+        int idle_{};
+        int run_{};
+        int die_{};
     };
 
-    class Enemy : public Unit {
+    class Enemy : public Unit, IIdler, IDying, ISpeaker {
       public:
         explicit Enemy(Model, long long, long long);
         [[nodiscard]] bool isEnemy() const override;
         virtual std::string question() = 0;
+        void idle() override;
+        void die() override;
+      private:
+        int idle_{};
+        int die_{};
+        int speak_{};
     };
 
     class Dragon : Enemy {

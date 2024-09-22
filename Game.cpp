@@ -33,27 +33,6 @@ gm::Model & gm::Model::operator=(Model other) {
     return *this;
 }
 
-void gm::Model::idle() {
-    auto newRect = this->getTextureRect();
-    newRect.top = 0;
-    newRect.left += 32 * ((++this->idle_) %= 6);
-    this->setTextureRect(newRect);
-}
-
-void gm::Model::run() {
-    auto newRect = this->getTextureRect();
-    newRect.top = 32;
-    newRect.left += 32 * ((++this->idle_) %= 8);
-    this->setTextureRect(newRect);
-}
-
-void gm::Model::die() {
-    auto newRect = this->getTextureRect();
-    newRect.top = 64;
-    newRect.left += 32 * ((++this->idle_) %= 12);
-    this->setTextureRect(newRect);
-}
-
 gm::Model::~Model() override {
     delete this->texture_;
 }
@@ -78,18 +57,6 @@ void gm::Unit::attack(Unit& other) const {
     other.damage(this->attack_);
 }
 
-void gm::Unit::idle() const {
-    this->model_->idle();
-}
-
-void gm::Unit::run() const {
-    this->model_->run();
-}
-
-void gm::Unit::die() const {
-    this->model_->die();
-}
-
 void gm::Unit::draw(sf::RenderWindow & window) const {
     window.draw(*this->model_);
 }
@@ -106,11 +73,40 @@ bool gm::Hero::isEnemy() const {
     return false;
 }
 
+void gm::Hero::idle() {
+    auto hero_rect = this->getTextureRect();
+    ++this->idle_;
+    hero_idle %= 5;
+    if (hero_idle < 2) {
+        hero_rect.top = 0;
+        hero_rect.left = 32 * hero_idle;
+    } else if (hero_idle <= 4) {
+        hero_rect.top = 32;
+        hero_rect.left = 32 * (hero_idle % 2);
+    }
+
+    hero.setTextureRect(hero_rect);
+}
+
+void gm::Hero::run() {
+
+}
+
+void gm::Hero::die() {
+
+}
+
 gm::Enemy::Enemy(Model model, const long long hp, const long long attack) :
 Unit(std::move(model), hp, attack) {}
 
 bool gm::Enemy::isEnemy() const {
     return true;
+}
+
+void gm::Enemy::idle() {
+}
+
+void gm::Enemy::die() {
 }
 
 gm::Dragon::Dragon(Model model, const long long hp, const long long attack) :
