@@ -71,7 +71,7 @@ namespace gm {
         int die_{};
     };
 
-    class Enemy : public Unit, IIdler, IDying, ISpeaker {
+    class Enemy : public Unit, IIdler, IDying {
       public:
         explicit Enemy(Model, long long, long long);
         [[nodiscard]] bool isEnemy() const override;
@@ -81,7 +81,6 @@ namespace gm {
       private:
         int idle_{};
         int die_{};
-        int speak_{};
     };
 
     class Dragon : Enemy {
@@ -121,11 +120,13 @@ namespace gm {
       even
     };
 
-    class Troll final : public Enemy {
+    class Troll final : public Enemy, ISpeaker {
       public:
         explicit Troll(Model, long long, long long);
         std::string question() override;
+        void speak() override;
       private:
         TrollQuestionType type_{};
+        int speak_{};
     };
 }
