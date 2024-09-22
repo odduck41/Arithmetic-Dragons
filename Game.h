@@ -7,7 +7,9 @@ namespace gm {
       public:
         explicit Model(const sf::Texture&);
 
+        Model(const Model&);
         Model(Model&&) noexcept;
+        Model& operator=(Model);
 
         void idle();
         void run();
@@ -30,6 +32,7 @@ namespace gm {
         [[nodiscard]] bool isAlive() const;
 
         void damage(const unsigned long long&);
+        void attack(Unit&) const;
 
         void idle() const;
         void run() const;
@@ -54,28 +57,43 @@ namespace gm {
     class Enemy : public Unit {
       public:
         explicit Enemy(Model, long long, long long);
+        [[nodiscard]] bool isEnemy() const override;
+        virtual void question() = 0;
     };
 
     class Dragon : Enemy {
       public:
         explicit Dragon(Model, long long, long long);
+        [[nodiscard]] virtual bool answer(long long) const = 0;
+      protected:
+        long long a{};
+        long long b{};
     };
 
     class Red final : public Dragon {
       public:
         explicit Red(Model, long long, long long);
-        [[nodiscard]] bool isEnemy() const override;
+        void question() override;
+        [[nodiscard]] bool answer(long long) const override;
     };
 
     class Green final : public Dragon {
       public:
         explicit Green(Model, long long, long long);
-        [[nodiscard]] bool isEnemy() const override;
+        void question() override;
+        [[nodiscard]] bool answer(long long) const override;
     };
 
     class Black final : public Dragon {
       public:
         explicit Black(Model, long long, long long);
-        [[nodiscard]] bool isEnemy() const override;
+        void question() override;
+        [[nodiscard]] bool answer(long long) const override;
+    };
+
+    class Troll final : public Enemy {
+      public:
+        explicit Troll(Model, long long, long long);
+        void question() override;
     };
 }
