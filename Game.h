@@ -58,7 +58,7 @@ namespace gm {
       public:
         explicit Enemy(Model, long long, long long);
         [[nodiscard]] bool isEnemy() const override;
-        virtual void question() = 0;
+        virtual std::string question() = 0;
     };
 
     class Dragon : Enemy {
@@ -70,30 +70,39 @@ namespace gm {
         long long b{};
     };
 
-    class Red final : public Dragon {
+    class Red final : public Dragon { // Red asks the sum
       public:
         explicit Red(Model, long long, long long);
-        void question() override;
+        std::string question() override;
         [[nodiscard]] bool answer(long long) const override;
     };
 
-    class Green final : public Dragon {
+    class Green final : public Dragon { // Green asks the difference
       public:
         explicit Green(Model, long long, long long);
-        void question() override;
+        std::string question() override;
         [[nodiscard]] bool answer(long long) const override;
     };
 
-    class Black final : public Dragon {
+    class Black final : public Dragon { // Black asks the multiplication
       public:
         explicit Black(Model, long long, long long);
-        void question() override;
+        std::string question() override;
         [[nodiscard]] bool answer(long long) const override;
+    };
+
+    enum TrollQuestionType {
+      guessing,
+      prime,
+      odd,
+      even
     };
 
     class Troll final : public Enemy {
       public:
         explicit Troll(Model, long long, long long);
-        void question() override;
+        std::string question() override;
+      private:
+        TrollQuestionType type_{};
     };
 }
