@@ -1,8 +1,42 @@
 #pragma once
+#include <random>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
 namespace gm {
+
+    extern std::mt19937 generator;
+
+    struct Milliseconds {
+      public:
+        explicit Milliseconds(const int milliseconds) : milliseconds_(milliseconds) {};
+        friend bool operator>=(const int& a, const Milliseconds& b) {
+          return a > b.milliseconds_;
+        }
+      private:
+        int milliseconds_{};
+    };
+
+    class Timer {
+      public:
+          Timer() {
+              last_ = clock_.getElapsedTime();;
+          }
+          [[nodiscard]] bool passed(const Milliseconds& ms) const {
+              const sf::Time now = clock_.getElapsedTime();
+              return (now.asMilliseconds() - last_.asMilliseconds()) >= ms;
+          }
+
+          void update() {
+              last_ = clock_.getElapsedTime();
+          }
+
+      private:
+          static sf::Clock clock_;
+          sf::Time last_{};
+    };
+
     class Model final : public sf::Sprite {
       public:
         explicit Model(const sf::Texture&);
@@ -17,28 +51,35 @@ namespace gm {
     };
 
     struct IIdler {
-      virtual void idle() = 0;
+      virtual void idle(const Milliseconds&) = 0;
       virtual ~IIdler() = default;
     };
 
     struct IRunner {
-        virtual void run() = 0;
+        virtual void left(const Milliseconds&) = 0;
+        virtual void right(const Milliseconds&) = 0;
         virtual ~IRunner() = default;
     };
 
     struct IDying {
-        virtual void die() = 0;
+        virtual void die(const Milliseconds&) = 0;
         virtual ~IDying() = default;
     };
 
     struct ISpeaker {
-      virtual void speak() = 0;
+      virtual void speak(const Milliseconds&) = 0;
       virtual ~ISpeaker() = default;
+    };
+
+    struct IAttacker {
+        virtual void attack(const Milliseconds&) = 0;
+        virtual ~IAttacker() = default;
     };
 
     class Unit {
       public:
-        explicit Unit(Model, long long = 100, long long = 20);
+        explicit Unit(Model, long long = 100, long long = 20,
+           sf::IntRect = {0, 0, 32, 32});
 
         [[nodiscard]] virtual bool isEnemy() const = 0;
 
@@ -48,45 +89,58 @@ namespace gm {
         void attack(Unit&) const;
 
         void draw(sf::RenderWindow&) const;
+
+        [[nodiscard]] sf::Vector2f getPosition() const;
+        void setPosition(const float&, const float&) const;
+        void setPosition(const sf::Vector2f&) const;
+
         virtual ~Unit();
 
       protected:
         Model* model_{};
+        Timer timer_{};
       private:
         long long hp_ = 100;
         long long attack_ = 20;
     };
 
-    class Hero final : public Unit, IIdler, IRunner, IDying {
+    class Hero final : public Unit, IIdler, IRunner, IDying, IAttacker {
       public:
-        Hero(Model, long long, long long);
+        explicit Hero(Model, long long = 100, long long = 20,
+                      sf::IntRect = {0, 0, 32, 32});
         [[nodiscard]] bool isEnemy() const override;
 
-        void idle() override;
-        void run() override;
-        void die() override;
+        void idle(const Milliseconds&) override;
+        void left(const Milliseconds&) override;
+        void right(const Milliseconds&) override;
+        void die(const Milliseconds&) override;
+        void attack(const Milliseconds&) override;
       private:
         int idle_{};
         int run_{};
         int die_{};
+        int atck_{};
     };
 
-    class Enemy : public Unit, IIdler, IDying {
+    class Enemy : public Unit, IIdler, IDying, IAttacker {
       public:
-        explicit Enemy(Model, long long, long long);
+        explicit Enemy(Model, long long = 100, long long = 30,
+          sf::IntRect = {0, 0, 32, 32});
         [[nodiscard]] bool isEnemy() const override;
         virtual std::string question() = 0;
-        void idle() override;
-        void die() override;
-      private:
+        [[nodiscard]] virtual bool answer(long long) const = 0;
+      protected:
         int idle_{};
         int die_{};
+        int atck_{};
     };
 
-    class Dragon : Enemy {
+    class Dragon : public Enemy {
       public:
         explicit Dragon(Model, long long, long long);
-        [[nodiscard]] virtual bool answer(long long) const = 0;
+        void idle(const Milliseconds&) override;
+        void die(const Milliseconds&) override;
+        void attack(const Milliseconds &) override;
       protected:
         long long a{};
         long long b{};
@@ -111,22 +165,44 @@ namespace gm {
         explicit Black(Model, long long, long long);
         std::string question() override;
         [[nodiscard]] bool answer(long long) const override;
-    };
-
-    enum TrollQuestionType {
-      guessing,
-      prime,
-      odd,
-      even
+        void die(const Milliseconds&) override;
     };
 
     class Troll final : public Enemy, ISpeaker {
       public:
         explicit Troll(Model, long long, long long);
         std::string question() override;
-        void speak() override;
+        [[nodiscard]] bool answer(long long) const override;
+
+        void idle(const Milliseconds&) override;
+        void die(const Milliseconds&) override;
+        void speak(const Milliseconds&) override;
+        void attack(const Milliseconds&) override;
       private:
-        TrollQuestionType type_{};
+        enum {
+          guessing = 0,
+          odd = 1,
+          even = 2
+        } type_{};
         int speak_{};
+        long long a_{};
     };
+
+    class smartBg {
+        public:
+          smartBg();
+          void left(const Milliseconds&);
+          void right(const Milliseconds&);
+          void draw(sf::RenderWindow&);
+          void fix(Unit&);
+        private:
+          std::vector<sf::Texture> textures{};
+          std::vector<sf::Sprite> backgrounds{};
+          std::vector<Unit*> fixed_;
+          Timer timer_{};
+    };
+}
+
+inline gm::Milliseconds operator""_ms(const unsigned long long x) {
+    return gm::Milliseconds(static_cast<int>(x));
 }
