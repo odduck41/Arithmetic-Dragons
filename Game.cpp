@@ -307,3 +307,27 @@ void gm::Troll::attack(const Milliseconds& ms) {
     this->model_->setTextureRect(rect);
 }
 
+bool gm::Troll::answer(const long long a) const {
+    if (type_ == guessing) {
+        return a_ == a;
+    }
+    if (type_ == odd) {
+        return a % 2;
+    }
+    return a % 2 == 0;
+}
+
+
+std::string gm::Troll::question() {
+    const auto e = generator() % 3;
+    if (e == 0) {
+        type_ = guessing;
+        a_ = generator() % 5;
+        return "Guess number from 0 to 5!";
+    }
+    if (e == 1) {
+        type_ = odd;
+        return "Give me an odd number!";
+    }
+    return "Give me an even number!";
+}
