@@ -27,9 +27,9 @@ int main() {
 
     gm::Hero hero(gm::Model(t), 100, 20);
     hero.setPosition((928. - 32) / 2, 600 - (793 - 696));
-    t.loadFromFile("../textures/dragons/black_ani.png");
-    gm::Black dragon(gm::Model(t), 150, 30);
-    dragon.setPosition(700, 600 - (793 - 696));
+    t.loadFromFile("../textures/troll.png");
+    gm::Troll troll(gm::Model(t), 150, 30);
+    troll.setPosition(700, 600 - (793 - 696));
 
     enum EventType {
         left,
@@ -73,10 +73,10 @@ int main() {
         } else {
             hero.attack(82_ms);
         }
-        dragon.attack(164_ms);
+        troll.attack(82_ms);
 
         hero.draw(window);
-        dragon.draw(window);
+        troll.draw(window);
         window.display();
     }
     return 41;

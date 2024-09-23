@@ -296,6 +296,14 @@ void gm::Troll::speak(const Milliseconds& ms) { // 75
 }
 
 void gm::Troll::attack(const Milliseconds& ms) {
+    if (!timer_.passed(ms)) return;
+    timer_.update();
 
+    auto rect = this->model_->getTextureRect();
+    rect.top = 32 * 4;
+    rect.left = 32 * (atck_ %= 16);
+    ++atck_;
+
+    this->model_->setTextureRect(rect);
 }
 
