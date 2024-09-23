@@ -27,11 +27,15 @@ int main() {
 
     gm::Hero hero(gm::Model(t), 100, 20);
     hero.setPosition((928. - 32) / 2, 600 - (793 - 696));
+    t.loadFromFile("../textures/dragons/red.png");
+    gm::Red red(gm::Model(t), 150, 30);
+    red.setPosition(700, 600 - (793 - 696));
 
     enum EventType {
         left,
         right,
-        idle
+        idle,
+        die
     } ev = idle;
     while (window.isOpen()) {
         sf::Event event{};
@@ -45,6 +49,8 @@ int main() {
                 ev = right;
             } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
                 ev = left;
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                ev = die;
             } else {
                 ev = idle;
             }
@@ -62,11 +68,15 @@ int main() {
             //     backgrounds[i].setTextureRect(rect);
             // }
             hero.left(41_ms);
-        } else {
+        } else if (ev == right) {
             hero.right(41_ms);
+        } else {
+            hero.die(300_ms);
         }
+        red.idle(200_ms);
 
         hero.draw(window);
+        red.draw(window);
         window.display();
     }
     return 41;

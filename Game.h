@@ -1,8 +1,13 @@
 #pragma once
+#include <random>
+
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
 namespace gm {
+
+    extern std::mt19937 generator;
+
     struct Milliseconds {
       public:
         explicit Milliseconds(const int milliseconds) : milliseconds_(milliseconds) {};
@@ -99,7 +104,7 @@ namespace gm {
         void idle(const Milliseconds&) override;
         void left(const Milliseconds&) override;
         void right(const Milliseconds&) override;
-        void die(const Milliseconds&) override {;};
+        void die(const Milliseconds&) override;
       private:
         Timer timer_{};
         int idle_{};
@@ -113,18 +118,19 @@ namespace gm {
           sf::IntRect = {0, 0, 32, 32});
         [[nodiscard]] bool isEnemy() const override;
         virtual std::string question() = 0;
-        void idle(const Milliseconds&) override {;};
-        void die(const Milliseconds&) override {;};
-      private:
+      protected:
         int idle_{};
         int die_{};
     };
 
-    class Dragon : Enemy {
+    class Dragon : public Enemy {
       public:
         explicit Dragon(Model, long long, long long);
         [[nodiscard]] virtual bool answer(long long) const = 0;
+        void idle(const Milliseconds&) override;
+        void die(const Milliseconds&) override;
       protected:
+        Timer timer_;
         long long a{};
         long long b{};
     };
@@ -151,10 +157,10 @@ namespace gm {
     };
 
     enum TrollQuestionType {
-      guessing,
-      prime,
-      odd,
-      even
+        guessing,
+        prime,
+        odd,
+        even
     };
 
     class Troll final : public Enemy, ISpeaker {
@@ -162,6 +168,8 @@ namespace gm {
         explicit Troll(Model, long long, long long);
         std::string question() override;
         void speak(const Milliseconds&) override;
+        void idle(const Milliseconds&) override;
+        void die(const Milliseconds&) override;
       private:
         TrollQuestionType type_{};
         int speak_{};
