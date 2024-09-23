@@ -153,6 +153,7 @@ namespace gm {
         explicit Black(Model, long long, long long);
         std::string question() override;
         [[nodiscard]] bool answer(long long) const override;
+        void die(const Milliseconds&) override;
     };
 
     enum TrollQuestionType {

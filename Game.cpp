@@ -163,12 +163,12 @@ void gm::Dragon::idle(const Milliseconds& ms) {
 }
 
 void gm::Dragon::die(const Milliseconds& ms) {
-    if (!timer_.passed(ms)) return;
+    if (!timer_.passed(ms) || die_ >= 9) return;
     timer_.update();
 
     auto rect = this->model_->getTextureRect();
     rect.top = 32;
-    rect.left = 32 * (die_ %= 5);
+    rect.left = 32 * (die_);
     ++die_;
 
     this->model_->setTextureRect(rect);
@@ -214,6 +214,18 @@ std::string gm::Black::question() {
 
 bool gm::Black::answer(const long long ans) const {
     return ans == a * b;
+}
+
+void gm::Black::die(const Milliseconds &ms) {
+    if (!timer_.passed(ms) || die_ >= 12) return;
+    timer_.update();
+
+    auto rect = this->model_->getTextureRect();
+    rect.top = 32;
+    rect.left = 32 * (die_);
+    ++die_;
+
+    this->model_->setTextureRect(rect);
 }
 
 gm::Troll::Troll(Model model, const long long hp, const long long attack) :
