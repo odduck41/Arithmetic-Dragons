@@ -61,8 +61,16 @@ void gm::Unit::draw(sf::RenderWindow & window) const {
     window.draw(*this->model_);
 }
 
+sf::Vector2f gm::Unit::getPosition() const {
+    return this->model_->getPosition();
+}
+
 void gm::Unit::setPosition(const float& x, const float& y) const {
     this->model_->setPosition({x, y});
+}
+
+void gm::Unit::setPosition(const sf::Vector2f& pos) const {
+    this->model_->setPosition(pos);
 }
 
 gm::Unit::~Unit() {
@@ -361,6 +369,10 @@ void gm::smartBg::left(const Milliseconds& ms) {
         rect.left -= (static_cast<int>(i) + 1);
         backgrounds[i].setTextureRect(rect);
     }
+
+    for (const auto& fixed: fixed_) {
+        fixed->setPosition(fixed->getPosition() + sf::Vector2f(11, 0));
+    }
 }
 
 void gm::smartBg::right(const Milliseconds& ms) {
@@ -371,11 +383,19 @@ void gm::smartBg::right(const Milliseconds& ms) {
         rect.left += (static_cast<int>(i) + 1);
         backgrounds[i].setTextureRect(rect);
     }
+
+    for (const auto& fixed: fixed_) {
+        fixed->setPosition(fixed->getPosition() - sf::Vector2f(11, 0));
+    }
 }
 
 void gm::smartBg::draw(sf::RenderWindow& window) {
     for (auto& back: backgrounds) {
         window.draw(back);
     }
+}
+
+void gm::smartBg::fix(Unit& obj) {
+    fixed_.push_back(&obj);
 }
 

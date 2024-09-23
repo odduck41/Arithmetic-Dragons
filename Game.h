@@ -89,7 +89,10 @@ namespace gm {
         void attack(Unit&) const;
 
         void draw(sf::RenderWindow&) const;
+
+        [[nodiscard]] sf::Vector2f getPosition() const;
         void setPosition(const float&, const float&) const;
+        void setPosition(const sf::Vector2f&) const;
 
         virtual ~Unit();
 
@@ -191,9 +194,11 @@ namespace gm {
           void left(const Milliseconds&);
           void right(const Milliseconds&);
           void draw(sf::RenderWindow&);
+          void fix(Unit&);
         private:
           std::vector<sf::Texture> textures{};
           std::vector<sf::Sprite> backgrounds{};
+          std::vector<Unit*> fixed_;
           Timer timer_{};
     };
 }

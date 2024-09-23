@@ -22,11 +22,11 @@ int main() {
         idle,
         die
     } ev = idle;
-
+    bg.fix(troll);
     while (window.isOpen()) {
-        if (!window.hasFocus()) continue;
         sf::Event event{};
         while (window.pollEvent(event)) {
+            if (!window.hasFocus()) continue;
             if (event.type == sf::Event::Closed) {
                 window.close();
                 return 0;
