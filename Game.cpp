@@ -81,7 +81,6 @@ void gm::Hero::idle(const Milliseconds& ms) {
     if (!timer_.passed(ms)) return;
     timer_.update();
     auto rect = this->model_->getTextureRect();
-    ++idle_;
     idle_ %= 9;
     if (idle_ < 6) {
         rect.top = 0;
@@ -90,6 +89,7 @@ void gm::Hero::idle(const Milliseconds& ms) {
         rect.top = 32;
         rect.left = 32 * (idle_ % 2);
     }
+    ++idle_;
 
     this->model_->setTextureRect(rect);
 }
@@ -105,9 +105,9 @@ void gm::Hero::left(const Milliseconds& ms) {
     }
 
     auto rect = this->model_->getTextureRect();
-    ++run_;
     rect.top = 32 * 3;
-    rect.left = 32 * (run_ % 8);
+    rect.left = 32 * (run_ %= 8);
+    ++run_;
 
     this->model_->setTextureRect(rect);
 }
@@ -123,9 +123,9 @@ void gm::Hero::right(const Milliseconds& ms) {
     }
 
     auto rect = this->model_->getTextureRect();
-    ++run_;
     rect.top = 32 * 3;
-    rect.left = 32 * (run_ % 8);
+    rect.left = 32 * (run_ %= 8);
+    ++run_;
 
     this->model_->setTextureRect(rect);
 }
@@ -154,19 +154,23 @@ Enemy(std::move(model), hp, attack) {}
 void gm::Dragon::idle(const Milliseconds& ms) {
     if (!timer_.passed(ms)) return;
     timer_.update();
-    ++idle_;
+
     auto rect = this->model_->getTextureRect();
     rect.left = 32 * (idle_ %= 4);
+    ++idle_;
+
     this->model_->setTextureRect(rect);
 }
 
 void gm::Dragon::die(const Milliseconds& ms) {
     if (!timer_.passed(ms)) return;
     timer_.update();
-    ++idle_;
+
     auto rect = this->model_->getTextureRect();
     rect.top = 32;
-    rect.left = 32 * (idle_ %= 5);
+    rect.left = 32 * (die_ %= 5);
+    ++die_;
+
     this->model_->setTextureRect(rect);
 }
 
@@ -183,7 +187,6 @@ std::string gm::Red::question() {
 bool gm::Red::answer(const long long ans) const {
     return ans == a + b;
 }
-
 
 gm::Green::Green(Model model, const long long hp, const long long attack)
 : Dragon(std::move(model), hp, attack) {}
@@ -211,5 +214,49 @@ std::string gm::Black::question() {
 
 bool gm::Black::answer(const long long ans) const {
     return ans == a * b;
+}
+
+gm::Troll::Troll(Model model, const long long hp, const long long attack) :
+Enemy(std::move(model), hp, attack) {}
+
+void gm::Troll::idle(const Milliseconds& ms) { // 160
+    if (!timer_.passed(ms)) return;
+    timer_.update();
+    auto rect = this->model_->getTextureRect();
+    idle_ %= 7;
+    if (idle_ < 4) {
+        rect.top = 0;
+        rect.left = 32 * (idle_ % 2);
+    } else if (idle_ <= 6) {
+        rect.top = 32;
+        rect.left = 32 * (idle_ % 2);
+    }
+    ++idle_;
+
+    this->model_->setTextureRect(rect);
+}
+
+void gm::Troll::die(const Milliseconds& ms) { // 150
+    if (!timer_.passed(ms) || die_ > 12) return;
+    timer_.update();
+
+    auto rect = this->model_->getTextureRect();
+    rect.top = 32 * 3;
+    rect.left = 32 * (die_);
+    ++die_;
+
+    this->model_->setTextureRect(rect);
+}
+
+void gm::Troll::speak(const Milliseconds& ms) { // 75
+    if (!timer_.passed(ms)) return;
+    timer_.update();
+
+    auto rect = this->model_->getTextureRect();
+    rect.top = 32 * 2;
+    rect.left = 32 * (speak_ %= 4);
+    ++speak_;
+
+    this->model_->setTextureRect(rect);
 }
 

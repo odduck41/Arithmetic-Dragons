@@ -27,9 +27,9 @@ int main() {
 
     gm::Hero hero(gm::Model(t), 100, 20);
     hero.setPosition((928. - 32) / 2, 600 - (793 - 696));
-    t.loadFromFile("../textures/dragons/red.png");
-    gm::Red red(gm::Model(t), 150, 30);
-    red.setPosition(700, 600 - (793 - 696));
+    t.loadFromFile("../textures/troll.png");
+    gm::Troll troll(gm::Model(t), 150, 30);
+    troll.setPosition(700, 600 - (793 - 696));
 
     enum EventType {
         left,
@@ -38,9 +38,9 @@ int main() {
         die
     } ev = idle;
     while (window.isOpen()) {
+        if (!window.hasFocus()) continue;
         sf::Event event{};
         while (window.pollEvent(event)) {
-            if (!window.hasFocus()) continue;
             if (event.type == sf::Event::Closed) {
                 window.close();
                 return 0;
@@ -73,10 +73,10 @@ int main() {
         } else {
             hero.die(300_ms);
         }
-        red.idle(200_ms);
+        troll.speak(75_ms);
 
         hero.draw(window);
-        red.draw(window);
+        troll.draw(window);
         window.display();
     }
     return 41;

@@ -90,6 +90,7 @@ namespace gm {
 
       protected:
         Model* model_{};
+        Timer timer_{};
       private:
         long long hp_ = 100;
         long long attack_ = 20;
@@ -106,7 +107,6 @@ namespace gm {
         void right(const Milliseconds&) override;
         void die(const Milliseconds&) override;
       private:
-        Timer timer_{};
         int idle_{};
         int run_{};
         int die_{};
@@ -130,7 +130,6 @@ namespace gm {
         void idle(const Milliseconds&) override;
         void die(const Milliseconds&) override;
       protected:
-        Timer timer_;
         long long a{};
         long long b{};
     };
@@ -166,10 +165,11 @@ namespace gm {
     class Troll final : public Enemy, ISpeaker {
       public:
         explicit Troll(Model, long long, long long);
-        std::string question() override;
-        void speak(const Milliseconds&) override;
+        std::string question() override {;};
+
         void idle(const Milliseconds&) override;
         void die(const Milliseconds&) override;
+        void speak(const Milliseconds&) override;
       private:
         TrollQuestionType type_{};
         int speak_{};
