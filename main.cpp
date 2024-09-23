@@ -21,30 +21,18 @@ int main() {
         backgrounds[i].setPosition({0, 600 - 793});
     }
     std::ranges::reverse(backgrounds);
-    //
-    // sf::Texture hero_texture;
-    // hero_texture.loadFromFile("../textures/hero.png");
-    //
-    // sf::Sprite hero(hero_texture);
-    // hero.setTextureRect({0, 32 * 3, 32, 32});
-    // hero.setPosition(100, 600 - (793 - 696)); // (928 - 696)
-    // int hero_run = 0;
-    // int hero_idle = 0;
-    // int troll_idle = 0;
-    //
-    // sf::Texture enemy_texture;
-    // enemy_texture.loadFromFile("../textures/troll.png");
-    // sf::Sprite enemy(enemy_texture);
-    // enemy.setTextureRect({0, 0, 32, 32});
-    // enemy.setPosition(928 + 11, 600 - (793 - 696));
-    //
-    //
-    //
-    // sf::Clock clock;
-    // sf::Time last = clock.getElapsedTime();
+
     sf::Texture t;
     t.loadFromFile("../textures/hero.png");
+
     gm::Hero hero(gm::Model(t), 100, 20);
+    hero.setPosition((928. - 32) / 2, 600 - (793 - 696));
+
+    enum EventType {
+        left,
+        right,
+        idle
+    } ev = idle;
     while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
@@ -53,13 +41,30 @@ int main() {
                 window.close();
                 return 0;
             }
-
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+                ev = right;
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+                ev = left;
+            } else {
+                ev = idle;
+            }
         }
         window.clear();
         for (auto& back: backgrounds) {
             window.draw(back);
         }
-        hero.idle(175_ms);
+        if (ev == idle) {
+            hero.idle(175_ms);
+        } else if (ev == left) {
+            // for (size_t i = 0; i < backgrounds.size(); ++i) {
+            //     auto rect = backgrounds[i].getTextureRect();
+            //     rect.left += (static_cast<int>(i) + 1);
+            //     backgrounds[i].setTextureRect(rect);
+            // }
+            hero.left(41_ms);
+        } else {
+            hero.right(41_ms);
+        }
 
         hero.draw(window);
         window.display();

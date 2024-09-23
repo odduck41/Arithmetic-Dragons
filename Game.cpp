@@ -58,6 +58,10 @@ void gm::Unit::draw(sf::RenderWindow & window) const {
     window.draw(*this->model_);
 }
 
+void gm::Unit::setPosition(const float& x, const float& y) const {
+    this->model_->setPosition({x, y});
+}
+
 gm::Unit::~Unit() {
     delete model_;
 }
@@ -75,14 +79,50 @@ void gm::Hero::idle(const Milliseconds& ms) {
     timer_.update();
     auto hero_rect = this->model_->getTextureRect();
     ++idle_;
-    idle_ %= 5;
-    if (idle_ < 2) {
+    idle_ %= 9;
+    if (idle_ < 6) {
         hero_rect.top = 0;
         hero_rect.left = 32 * (idle_ % 2);
-    } else if (idle_ <= 4) {
+    } else if (idle_ <= 8) {
         hero_rect.top = 32;
         hero_rect.left = 32 * (idle_ % 2);
     }
+
+    this->model_->setTextureRect(hero_rect);
+}
+
+void gm::Hero::left(const Milliseconds& ms) {
+    if (!timer_.passed(ms)) return;
+    timer_.update();
+
+    if (auto sc = model_->getScale(); sc.x > 0) {
+        sc.x *= -1;
+        model_->setScale(sc);
+        model_->setPosition(model_->getPosition() + sf::Vector2f{32, 0});
+    }
+
+    auto hero_rect = this->model_->getTextureRect();
+    ++run_;
+    hero_rect.top = 32 * 3;
+    hero_rect.left = 32 * (run_ % 8);
+
+    this->model_->setTextureRect(hero_rect);
+}
+
+void gm::Hero::right(const Milliseconds& ms) {
+    if (!timer_.passed(ms)) return;
+    timer_.update();
+
+    if (auto sc = model_->getScale(); sc.x < 0) {
+        sc.x *= -1;
+        model_->setScale(sc);
+        model_->setPosition(model_->getPosition() - sf::Vector2f{32, 0});
+    }
+
+    auto hero_rect = this->model_->getTextureRect();
+    ++run_;
+    hero_rect.top = 32 * 3;
+    hero_rect.left = 32 * (run_ % 8);
 
     this->model_->setTextureRect(hero_rect);
 }

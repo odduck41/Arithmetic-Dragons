@@ -79,6 +79,8 @@ namespace gm {
         void attack(Unit&) const;
 
         void draw(sf::RenderWindow&) const;
+        void setPosition(const float&, const float&) const;
+
         virtual ~Unit();
 
       protected:
@@ -95,9 +97,9 @@ namespace gm {
         [[nodiscard]] bool isEnemy() const override;
 
         void idle(const Milliseconds&) override;
-        void left(const Milliseconds&) override {;};
-        void right(const Milliseconds&) override{;};
-        void die(const Milliseconds&) override{;};
+        void left(const Milliseconds&) override;
+        void right(const Milliseconds&) override;
+        void die(const Milliseconds&) override {;};
       private:
         Timer timer_{};
         int idle_{};
