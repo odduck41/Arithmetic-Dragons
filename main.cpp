@@ -59,7 +59,7 @@ int main() {
         for (auto& back: backgrounds) {
             window.draw(back);
         }
-        hero.idle();
+        hero.idle(175_ms);
 
         hero.draw(window);
         window.display();

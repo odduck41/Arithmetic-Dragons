@@ -13,9 +13,11 @@ namespace gm {
         int milliseconds_{};
     };
 
-
     class Timer {
       public:
+          Timer() {
+              last_ = clock_.getElapsedTime();;
+          }
           [[nodiscard]] bool passed(const Milliseconds& ms) const {
               const sf::Time now = clock_.getElapsedTime();
               return (now.asMilliseconds() - last_.asMilliseconds()) >= ms;
@@ -27,7 +29,7 @@ namespace gm {
 
       private:
           static sf::Clock clock_;
-          sf::Time last_ = clock_.getElapsedTime();
+          sf::Time last_{};
     };
 
     class Model final : public sf::Sprite {
@@ -44,23 +46,23 @@ namespace gm {
     };
 
     struct IIdler {
-      virtual void idle() = 0;
+      virtual void idle(const Milliseconds&) = 0;
       virtual ~IIdler() = default;
     };
 
     struct IRunner {
-        virtual void left() = 0;
-        virtual void right() = 0;
+        virtual void left(const Milliseconds&) = 0;
+        virtual void right(const Milliseconds&) = 0;
         virtual ~IRunner() = default;
     };
 
     struct IDying {
-        virtual void die() = 0;
+        virtual void die(const Milliseconds&) = 0;
         virtual ~IDying() = default;
     };
 
     struct ISpeaker {
-      virtual void speak() = 0;
+      virtual void speak(const Milliseconds&) = 0;
       virtual ~ISpeaker() = default;
     };
 
@@ -92,11 +94,12 @@ namespace gm {
                       sf::IntRect = {0, 0, 32, 32});
         [[nodiscard]] bool isEnemy() const override;
 
-        void idle() override;
-        void left() override;
-        void right() override;
-        void die() override;
+        void idle(const Milliseconds&) override;
+        void left(const Milliseconds&) override {;};
+        void right(const Milliseconds&) override{;};
+        void die(const Milliseconds&) override{;};
       private:
+        Timer timer_{};
         int idle_{};
         int run_{};
         int die_{};
@@ -108,8 +111,8 @@ namespace gm {
           sf::IntRect = {0, 0, 32, 32});
         [[nodiscard]] bool isEnemy() const override;
         virtual std::string question() = 0;
-        void idle() override;
-        void die() override;
+        void idle(const Milliseconds&) override {;};
+        void die(const Milliseconds&) override {;};
       private:
         int idle_{};
         int die_{};
@@ -156,7 +159,7 @@ namespace gm {
       public:
         explicit Troll(Model, long long, long long);
         std::string question() override;
-        void speak() override;
+        void speak(const Milliseconds&) override;
       private:
         TrollQuestionType type_{};
         int speak_{};
@@ -164,5 +167,5 @@ namespace gm {
 }
 
 inline gm::Milliseconds operator""_ms(const unsigned long long x) {
-  return gm::Milliseconds(static_cast<int>(x));
+    return gm::Milliseconds(static_cast<int>(x));
 }

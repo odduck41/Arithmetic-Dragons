@@ -2,6 +2,8 @@
 
 #include <utility>
 
+sf::Clock gm::Timer::clock_;
+
 gm::Model::Model(const sf::Texture& texture) : texture_(new sf::Texture(texture)) {
     this->setTexture(texture);
 }
@@ -68,8 +70,9 @@ bool gm::Hero::isEnemy() const {
     return false;
 }
 
-void gm::Hero::idle(Milliseconds ms) {
-    if (!timer_.passed(ms))
+void gm::Hero::idle(const Milliseconds& ms) {
+    if (!timer_.passed(ms)) return;
+    timer_.update();
     auto hero_rect = this->model_->getTextureRect();
     ++idle_;
     idle_ %= 5;
@@ -93,4 +96,3 @@ bool gm::Enemy::isEnemy() const {
 
 gm::Dragon::Dragon(Model model, const long long hp, const long long attack) :
 Enemy(std::move(model), hp, attack) {}
-
