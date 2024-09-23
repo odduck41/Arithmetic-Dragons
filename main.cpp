@@ -57,8 +57,8 @@ int main() {
         troll.attack(82_ms);
 
         bg.draw(window);
-        hero.draw(window);
         troll.draw(window);
+        hero.draw(window);
 
         window.display();
     }
