@@ -331,3 +331,51 @@ std::string gm::Troll::question() {
     }
     return "Give me an even number!";
 }
+
+
+gm::smartBg::smartBg()  {
+    backgrounds.resize(11);
+    textures.resize(11);
+    for (size_t i = 0; i < backgrounds.size(); ++i) {
+        sf::Texture texture;
+        if (i < 10) {
+            texture.loadFromFile("../textures/bgs/Layer_000"
+              + std::to_string(i) + ".png");
+        } else {
+            texture.loadFromFile("../textures/bgs/Layer_00"
+              + std::to_string(i) + ".png");
+        }
+        texture.setRepeated(true);
+        textures[i] = texture;
+        backgrounds[i].setTexture(textures[i]);
+        backgrounds[i].setPosition({0, 600 - 793});
+    }
+    std::ranges::reverse(backgrounds);
+}
+
+void gm::smartBg::left(const Milliseconds& ms) {
+    if (!timer_.passed(ms)) return;
+    timer_.update();
+    for (size_t i = 0; i < backgrounds.size(); ++i) {
+        auto rect = backgrounds[i].getTextureRect();
+        rect.left -= (static_cast<int>(i) + 1);
+        backgrounds[i].setTextureRect(rect);
+    }
+}
+
+void gm::smartBg::right(const Milliseconds& ms) {
+    if (!timer_.passed(ms)) return;
+    timer_.update();
+    for (size_t i = 0; i < backgrounds.size(); ++i) {
+        auto rect = backgrounds[i].getTextureRect();
+        rect.left += (static_cast<int>(i) + 1);
+        backgrounds[i].setTextureRect(rect);
+    }
+}
+
+void gm::smartBg::draw(sf::RenderWindow& window) {
+    for (auto& back: backgrounds) {
+        window.draw(back);
+    }
+}
+

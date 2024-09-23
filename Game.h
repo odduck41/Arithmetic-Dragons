@@ -184,6 +184,18 @@ namespace gm {
         int speak_{};
         long long a_{};
     };
+
+    class smartBg {
+        public:
+          smartBg();
+          void left(const Milliseconds&);
+          void right(const Milliseconds&);
+          void draw(sf::RenderWindow&);
+        private:
+          std::vector<sf::Texture> textures{};
+          std::vector<sf::Sprite> backgrounds{};
+          Timer timer_{};
+    };
 }
 
 inline gm::Milliseconds operator""_ms(const unsigned long long x) {
