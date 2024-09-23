@@ -165,7 +165,7 @@ namespace gm {
         void die(const Milliseconds&) override;
     };
 
-    class Troll final : public Enemy, ISpeaker, IAttacker {
+    class Troll final : public Enemy, ISpeaker {
       public:
         explicit Troll(Model, long long, long long);
         std::string question() override;
@@ -174,7 +174,7 @@ namespace gm {
         void idle(const Milliseconds&) override;
         void die(const Milliseconds&) override;
         void speak(const Milliseconds&) override;
-        void attack(const Milliseconds &) override;
+        void attack(const Milliseconds&) override;
       private:
         enum {
           guessing = 0,
