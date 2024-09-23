@@ -185,6 +185,18 @@ void gm::Dragon::die(const Milliseconds& ms) {
     this->model_->setTextureRect(rect);
 }
 
+void gm::Dragon::attack(const Milliseconds& ms) {
+    if (!timer_.passed(ms) || die_ >= 9) return;
+    timer_.update();
+
+    auto rect = this->model_->getTextureRect();
+    rect.top = 32 * 2;
+    rect.left = 32 * (atck_ %= 6);
+    ++atck_;
+
+    this->model_->setTextureRect(rect);
+}
+
 gm::Red::Red(Model model, const long long hp, const long long attack)
 : Dragon(std::move(model), hp, attack) {}
 
@@ -281,5 +293,9 @@ void gm::Troll::speak(const Milliseconds& ms) { // 75
     ++speak_;
 
     this->model_->setTextureRect(rect);
+}
+
+void gm::Troll::attack(const Milliseconds& ms) {
+
 }
 

@@ -128,6 +128,7 @@ namespace gm {
       protected:
         int idle_{};
         int die_{};
+        int atck_{};
     };
 
     class Dragon : public Enemy {
@@ -136,6 +137,7 @@ namespace gm {
         [[nodiscard]] virtual bool answer(long long) const = 0;
         void idle(const Milliseconds&) override;
         void die(const Milliseconds&) override;
+        void attack(const Milliseconds &) override;
       protected:
         long long a{};
         long long b{};
@@ -170,7 +172,7 @@ namespace gm {
         even
     };
 
-    class Troll final : public Enemy, ISpeaker {
+    class Troll final : public Enemy, ISpeaker, IAttacker {
       public:
         explicit Troll(Model, long long, long long);
         std::string question() override {;};
@@ -178,6 +180,7 @@ namespace gm {
         void idle(const Milliseconds&) override;
         void die(const Milliseconds&) override;
         void speak(const Milliseconds&) override;
+        void attack(const Milliseconds &) override;
       private:
         TrollQuestionType type_{};
         int speak_{};
