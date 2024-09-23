@@ -141,6 +141,17 @@ void gm::Hero::die(const Milliseconds& ms) {
     this->model_->setTextureRect(rect);
 }
 
+void gm::Hero::attack(const Milliseconds& ms) {
+    if (!timer_.passed(ms)) return;
+    timer_.update();
+    auto rect = this->model_->getTextureRect();
+    rect.top = 32 * 8;
+    rect.left = 32 * (atck_ %= 8);
+    ++atck_;
+
+    this->model_->setTextureRect(rect);
+}
+
 gm::Enemy::Enemy(Model model, const long long hp, const long long attack, const sf::IntRect rect) :
 Unit(std::move(model), hp, attack, rect) {}
 

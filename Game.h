@@ -71,6 +71,11 @@ namespace gm {
       virtual ~ISpeaker() = default;
     };
 
+    struct IAttacker {
+        virtual void attack(const Milliseconds&) = 0;
+        virtual ~IAttacker() = default;
+    };
+
     class Unit {
       public:
         explicit Unit(Model, long long = 100, long long = 20,
@@ -96,7 +101,7 @@ namespace gm {
         long long attack_ = 20;
     };
 
-    class Hero final : public Unit, IIdler, IRunner, IDying {
+    class Hero final : public Unit, IIdler, IRunner, IDying, IAttacker {
       public:
         explicit Hero(Model, long long = 100, long long = 20,
                       sf::IntRect = {0, 0, 32, 32});
@@ -106,13 +111,15 @@ namespace gm {
         void left(const Milliseconds&) override;
         void right(const Milliseconds&) override;
         void die(const Milliseconds&) override;
+        void attack(const Milliseconds&) override;
       private:
         int idle_{};
         int run_{};
         int die_{};
+        int atck_{};
     };
 
-    class Enemy : public Unit, IIdler, IDying {
+    class Enemy : public Unit, IIdler, IDying, IAttacker {
       public:
         explicit Enemy(Model, long long = 100, long long = 30,
           sf::IntRect = {0, 0, 32, 32});

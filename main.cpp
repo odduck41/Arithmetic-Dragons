@@ -28,8 +28,8 @@ int main() {
     gm::Hero hero(gm::Model(t), 100, 20);
     hero.setPosition((928. - 32) / 2, 600 - (793 - 696));
     t.loadFromFile("../textures/dragons/black_ani.png");
-    gm::Black dragon(gm::Model(t), 150, 30);
-    dragon.setPosition(700, 600 - (793 - 696));
+    // gm::Black dragon(gm::Model(t), 150, 30);
+    // dragon.setPosition(700, 600 - (793 - 696));
 
     enum EventType {
         left,
@@ -71,12 +71,12 @@ int main() {
         } else if (ev == right) {
             hero.right(41_ms);
         } else {
-            hero.die(300_ms);
+            hero.attack(82_ms);
         }
-        dragon.idle(200_ms);
+        // dragon.idle(200_ms);
 
         hero.draw(window);
-        dragon.draw(window);
+        // dragon.draw(window);
         window.display();
     }
     return 41;
