@@ -3,16 +3,6 @@
 #include <SFML/Window.hpp>
 
 namespace gm {
-    struct Seconds {
-      public:
-        explicit Seconds(const float seconds) : seconds_(seconds) {};
-        friend bool operator>=(const float& a, const Seconds& b) {
-            return a > b.seconds_;
-        }
-      private:
-        float seconds_{};
-    };
-
     struct Milliseconds {
       public:
         explicit Milliseconds(const int milliseconds) : milliseconds_(milliseconds) {};
@@ -24,32 +14,12 @@ namespace gm {
     };
 
 
-    struct Microseconds {
-      public:
-        explicit Microseconds(const long long microseconds) : microseconds_(microseconds) {};
-        friend bool operator>=(const long long& a, const Microseconds& b) {
-          return a > b.microseconds_;
-        }
-      private:
-        long long microseconds_{};
-    };
-
     class Timer {
       public:
-          bool passed(Seconds&& s) const {
-              const sf::Time now = clock_.getElapsedTime();
-              return (now.asSeconds() - last_.asSeconds()) >= s;
-          }
-
-          bool passed(Milliseconds&& ms) const {
+          [[nodiscard]] bool passed(const Milliseconds& ms) const {
               const sf::Time now = clock_.getElapsedTime();
               return (now.asMilliseconds() - last_.asMilliseconds()) >= ms;
           }
-
-          bool passed(Microseconds&& Ms) const {
-              const sf::Time now = clock_.getElapsedTime();
-              return (now.asMicroseconds() - last_.asMicroseconds()) >= Ms;
-          };
 
           void update() {
               last_ = clock_.getElapsedTime();
@@ -193,14 +163,6 @@ namespace gm {
     };
 }
 
-inline gm::Seconds operator""_s(const unsigned long long x) {
-  return gm::Seconds(static_cast<float>(x));
-}
-
 inline gm::Milliseconds operator""_ms(const unsigned long long x) {
   return gm::Milliseconds(static_cast<int>(x));
-}
-
-inline gm::Microseconds operator""_Ms(const unsigned long long x) {
-  return gm::Microseconds(static_cast<long long>(x));
 }
