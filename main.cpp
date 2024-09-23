@@ -54,7 +54,7 @@ int main() {
         } else {
             hero.attack(82_ms);
         }
-        troll.attack(82_ms);
+        troll.idle(150_ms);
 
         bg.draw(window);
         troll.draw(window);
