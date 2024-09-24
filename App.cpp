@@ -56,7 +56,7 @@ void Dialog::setLabel(const std::string& s) {
 App::App(const sf::VideoMode& vm, const std::string& name) : sf::RenderWindow(vm, name) {
     sf::Texture t;
     t.loadFromFile("../textures/hero.png");
-    hero_ = new gm::Hero(gm::Model(t), 100, 900);
+    hero_ = new gm::Hero(gm::Model(t), 100, 20);
     bg_ = new gm::smartBg();
     hero_->setPosition((928. - 32) / 2, 600 - (793 - 696));
 }
@@ -109,16 +109,18 @@ void App::loop() {
                     sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
                     if (enemy_->answer(std::stoll(q_->get_ans()))) {
                         hero_pos = attack;
+                        hattack = false;
                         hero_->give_damage(*enemy_);
                     } else {
                         enemy_pos = eattack;
+                        e_attack = false;
                         enemy_->give_damage(*hero_);
                     }
                     delete q_;
                     q_ = nullptr;
                 }
             }
-            if (enemy_ != nullptr && !enemy_->isAlive()) {
+            if (hattack && enemy_ != nullptr && !enemy_->isAlive()) {
                 delete enemy_;
                 enemy_ = nullptr;
                 enemy_pos = eidle;
@@ -126,7 +128,7 @@ void App::loop() {
                 q_ = nullptr;
                 hero_pos = idle;
             }
-            if (dis() && q_ == nullptr) {
+            if (hattack && e_attack && dis() && q_ == nullptr) {
                 question();
                 if (e_attack && dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
                     enemy_pos = espeak;
@@ -181,6 +183,9 @@ void App::loop() {
                 spawnEnemy();
             }
 
+            if (e_attack) {
+                enemy_pos = eidle;
+            }
             if (q_ != nullptr) {
                 q_->draw(*this);
             }
@@ -202,7 +207,7 @@ void App::loop() {
             } else if (dynamic_cast<gm::Black*>(enemy_) != nullptr) {
                 dynamic_cast<gm::Black*>(enemy_)->idle(150_ms);
             } else {
-                dynamic_cast<gm::Troll*>(enemy_)->idle(150_ms);
+                dynamic_cast<gm::Troll*>(enemy_)->idle(75_ms);
             }
             enemy_->draw(*this);
         }
@@ -224,27 +229,27 @@ void App::spawnEnemy() {
     t.loadFromFile("../textures/troll.png");
     const auto troll = new gm::Troll(gm::Model(t), 50, 10);
 
-    // if (const auto num = gm::generator() % 100; num >= 90) {
-    //     enemy_ = black;
-    //     delete red;
-    //     delete green;
-    //     delete troll;
-    // } else if (num >= 60) {
+    if (const auto num = gm::generator() % 100; num >= 90) {
+        enemy_ = black;
+        delete red;
+        delete green;
+        delete troll;
+    } else if (num >= 60) {
         enemy_ = troll;
         delete red;
         delete green;
         delete black;
-    // } else if (num >= 30) {
-    //     enemy_ = red;
-    //     delete troll;
-    //     delete green;
-    //     delete black;
-    // } else {
-    //     enemy_ = green;
-    //     delete troll;
-    //     delete red;
-    //     delete black;
-    // }
+    } else if (num >= 30) {
+        enemy_ = red;
+        delete troll;
+        delete green;
+        delete black;
+    } else {
+        enemy_ = green;
+        delete troll;
+        delete red;
+        delete black;
+    }
 
     enemy_->setPosition(1298, 600 - (793 - 696));
     bg_->fix(*enemy_);
