@@ -56,7 +56,7 @@ void Dialog::setLabel(const std::string& s) {
 App::App(const sf::VideoMode& vm, const std::string& name) : sf::RenderWindow(vm, name) {
     sf::Texture t;
     t.loadFromFile("../textures/hero.png");
-    hero_ = new gm::Hero(gm::Model(t), 100, 20);
+    hero_ = new gm::Hero(gm::Model(t), 100, 900);
     bg_ = new gm::smartBg();
     hero_->setPosition((928. - 32) / 2, 600 - (793 - 696));
 }
@@ -109,11 +109,18 @@ void App::loop() {
                         hero_pos = attack;
                         hero_->give_damage(*enemy_);
                     } else {
+                        enemy_pos = eattack;
                         enemy_->give_damage(*hero_);
                     }
+                    delete q_;
+                    q_ = nullptr;
                 }
             }
-
+            if (enemy_ != nullptr && !enemy_->isAlive()) {
+                delete enemy_;
+                enemy_ = nullptr;
+                enemy_pos = eidle;
+            }
             if (dis() && q_ == nullptr) {
                 question();
                 if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
@@ -161,7 +168,7 @@ void App::loop() {
                     } else if (enemy_pos == eattack) {
                         dynamic_cast<gm::Troll*>(enemy_)->attack(300_ms);
                     } else{
-                        dynamic_cast<gm::Troll*>(enemy_)->speak(300_ms);
+                        dynamic_cast<gm::Troll*>(enemy_)->speak(164_ms);
                     }
                 }
                 enemy_->draw(*this);
