@@ -330,7 +330,7 @@ bool gm::Troll::answer(const long long a) const {
     if (type_ == odd) {
         return a % 2;
     }
-    return a % 2 == 0;
+    return (a % 2 == 0);
 }
 
 
@@ -345,6 +345,7 @@ std::string gm::Troll::question() {
         type_ = odd;
         return "Give me an odd number!";
     }
+    type_ = even;
     return "Give me an even number!";
 }
 

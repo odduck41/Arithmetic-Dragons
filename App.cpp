@@ -67,7 +67,7 @@ App::~App() {
 
 bool App::dis() const {
     if (enemy_ == nullptr) return false;
-    return abs(hero_->getPosition().x - enemy_->getPosition().x) < 300;
+    return enemy_->getPosition().x - hero_->getPosition().x <= 300;
 }
 
 void App::loop() {
@@ -120,6 +120,9 @@ void App::loop() {
                 delete enemy_;
                 enemy_ = nullptr;
                 enemy_pos = eidle;
+                delete q_;
+                q_ = nullptr;
+                hero_pos = idle;
             }
             if (dis() && q_ == nullptr) {
                 question();
@@ -219,27 +222,27 @@ void App::spawnEnemy() {
     t.loadFromFile("../textures/troll.png");
     const auto troll = new gm::Troll(gm::Model(t), 50, 10);
 
-    if (const auto num = gm::generator() % 100; num >= 90) {
-        enemy_ = black;
-        delete red;
-        delete green;
-        delete troll;
-    } else if (num >= 60) {
+    // if (const auto num = gm::generator() % 100; num >= 90) {
+    //     enemy_ = black;
+    //     delete red;
+    //     delete green;
+    //     delete troll;
+    // } else if (num >= 60) {
         enemy_ = troll;
         delete red;
         delete green;
         delete black;
-    } else if (num >= 30) {
-        enemy_ = red;
-        delete troll;
-        delete green;
-        delete black;
-    } else {
-        enemy_ = green;
-        delete troll;
-        delete red;
-        delete black;
-    }
+    // } else if (num >= 30) {
+    //     enemy_ = red;
+    //     delete troll;
+    //     delete green;
+    //     delete black;
+    // } else {
+    //     enemy_ = green;
+    //     delete troll;
+    //     delete red;
+    //     delete black;
+    // }
 
     enemy_->setPosition(1298, 600 - (793 - 696));
     bg_->fix(*enemy_);
