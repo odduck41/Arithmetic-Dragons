@@ -72,7 +72,7 @@ namespace gm {
     };
 
     struct IAttacker {
-        virtual void attack(const Milliseconds&) = 0;
+        virtual bool attack(const Milliseconds&) = 0;
         virtual ~IAttacker() = default;
     };
 
@@ -116,7 +116,7 @@ namespace gm {
         void left(const Milliseconds&) override;
         void right(const Milliseconds&) override;
         bool die(const Milliseconds&) override;
-        void attack(const Milliseconds&) override;
+        bool attack(const Milliseconds&) override;
       private:
         int idle_{};
         int run_{};
@@ -142,7 +142,7 @@ namespace gm {
         explicit Dragon(Model, long long, long long);
         void idle(const Milliseconds&) override;
         bool die(const Milliseconds&) override;
-        void attack(const Milliseconds &) override;
+        bool attack(const Milliseconds &) override;
       protected:
         long long a{};
         long long b{};
@@ -179,7 +179,7 @@ namespace gm {
         void idle(const Milliseconds&) override;
         bool die(const Milliseconds&) override;
         void speak(const Milliseconds&) override;
-        void attack(const Milliseconds&) override;
+        bool attack(const Milliseconds&) override;
       private:
         enum {
           guessing = 0,

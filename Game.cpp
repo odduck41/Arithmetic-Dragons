@@ -151,8 +151,12 @@ bool gm::Hero::die(const Milliseconds& ms) {
     return false;
 }
 
-void gm::Hero::attack(const Milliseconds& ms) {
-    if (!timer_.passed(ms)) return;
+bool gm::Hero::attack(const Milliseconds& ms) {
+    if (atck_ == 8) {
+        atck_ %= 8;
+        return true;
+    }
+    if (!timer_.passed(ms)) return false;
     timer_.update();
     auto rect = this->model_->getTextureRect();
     rect.top = 32 * 8;
@@ -160,6 +164,7 @@ void gm::Hero::attack(const Milliseconds& ms) {
     ++atck_;
 
     this->model_->setTextureRect(rect);
+    return false;
 }
 
 gm::Enemy::Enemy(Model model, const long long hp, const long long attack, const sf::IntRect rect) :
@@ -197,8 +202,12 @@ bool gm::Dragon::die(const Milliseconds& ms) {
     return false;
 }
 
-void gm::Dragon::attack(const Milliseconds& ms) {
-    if (!timer_.passed(ms) || die_ >= 9) return;
+bool gm::Dragon::attack(const Milliseconds& ms) {
+    if (atck_ == 6) {
+        atck_ %= 6;
+        return true;
+    }
+    if (!timer_.passed(ms)) return false;
     timer_.update();
 
     auto rect = this->model_->getTextureRect();
@@ -207,6 +216,7 @@ void gm::Dragon::attack(const Milliseconds& ms) {
     ++atck_;
 
     this->model_->setTextureRect(rect);
+    return false;
 }
 
 gm::Red::Red(Model model, const long long hp, const long long attack)
@@ -311,8 +321,12 @@ void gm::Troll::speak(const Milliseconds& ms) { // 75
     this->model_->setTextureRect(rect);
 }
 
-void gm::Troll::attack(const Milliseconds& ms) {
-    if (!timer_.passed(ms)) return;
+bool gm::Troll::attack(const Milliseconds& ms) {
+    if (atck_ == 16) {
+        atck_ %= 16;
+        return true;
+    }
+    if (!timer_.passed(ms)) return false;
     timer_.update();
 
     auto rect = this->model_->getTextureRect();
@@ -321,6 +335,7 @@ void gm::Troll::attack(const Milliseconds& ms) {
     ++atck_;
 
     this->model_->setTextureRect(rect);
+    return false;
 }
 
 bool gm::Troll::answer(const long long a) const {
