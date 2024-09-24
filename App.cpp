@@ -1,11 +1,18 @@
 #include "App.h"
 #include <iostream>
 
+
 float abs(const float& x) {
     if (x < 0) {
         return -x;
     }
     return x;
+}
+
+Text::Text(const std::string& text, const std::string& filename) {
+    font_.loadFromFile(filename);
+    this->setString(text);
+    this->setFont(font_);
 }
 
 App::App(const sf::VideoMode& vm, const std::string& name) : sf::RenderWindow(vm, name) {
@@ -29,9 +36,10 @@ void App::loop() {
     enum {
         left,
         right,
-        die,
-        idle
+        idle,
+        answered
     } hero_pos = idle;
+
     while (this->isOpen()) {
         while (hero_->isAlive()) {
             sf::Event ev{};
@@ -46,17 +54,22 @@ void App::loop() {
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !dis()) {
                     hero_pos = left;
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-                    hero_->damage(20);
+                    ;
                 } else {
                     hero_pos = idle;
                 }
             }
+
+            if (dis() && q_ == nullptr) {
+                question();
+            }
+
             if (hero_pos == idle) {
                 hero_->idle(150_ms);
             } else if (hero_pos == left) {
                 hero_->left(41_ms);
                 bg_->left(41_ms);
-            } else if(hero_pos == right) {
+            } else if (hero_pos == right) {
                 hero_->right(41_ms);
                 bg_->right(41_ms);
             }
@@ -64,24 +77,20 @@ void App::loop() {
             this->clear();
             bg_->draw(*this);
 
-            if (dis()) {
-                sf::Font font;
-                font.loadFromFile("../textures/monogram.ttf");
-                sf::Text text(enemy_->question(), font);
-                text.setPosition(100, 100);
-                text.setColor(sf::Color::White);
-                this->draw(text);
-            }
-
             if (enemy_ != nullptr) {
                 dynamic_cast<gm::Red*>(enemy_)->idle(82_ms);
                 enemy_->draw(*this);
             } else {
                 spawnEnemy();
             }
+
+            if (q_ != nullptr) {
+                this->draw(*q_);
+            }
             hero_->draw(*this);
             this->display();
         }
+
         if (hero_->die(300_ms)) {
             this->close();
             return;
@@ -103,4 +112,8 @@ void App::spawnEnemy() {
     enemy_ = new gm::Red(gm::Model(t), 200, 20);
     enemy_->setPosition(1298, 600 - (793 - 696));
     bg_->fix(*enemy_);
+}
+
+void App::question() {
+    q_ = new Text(enemy_->question());
 }
