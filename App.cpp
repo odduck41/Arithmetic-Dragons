@@ -88,7 +88,7 @@ void App::loop() {
         while (hero_->isAlive()) {
             sf::Event ev{};
             while (this->pollEvent(ev)) {
-                if (!this->hasFocus()) continue;
+                // if (!this->hasFocus()) continue;
                 if (ev.type == sf::Event::Closed) {
                     this->close();
                     return;
@@ -130,7 +130,7 @@ void App::loop() {
             }
             if (hattack && e_attack && dis() && q_ == nullptr) {
                 question();
-                if (e_attack && dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
+                if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
                     enemy_pos = espeak;
                 }
             }
@@ -145,6 +145,9 @@ void App::loop() {
                 bg_->right(41_ms);
             } else {
                 hattack = hero_->attack(150_ms);
+            }
+            if (hattack) {
+                hero_pos = idle;
             }
 
             this->clear();
@@ -173,19 +176,19 @@ void App::loop() {
                     if (enemy_pos == eidle) {
                         dynamic_cast<gm::Troll*>(enemy_)->idle(150_ms);
                     } else if (enemy_pos == eattack) {
-                        e_attack = dynamic_cast<gm::Troll*>(enemy_)->attack(300_ms);
+                        e_attack = dynamic_cast<gm::Troll*>(enemy_)->attack(82_ms);
                     } else{
                         dynamic_cast<gm::Troll*>(enemy_)->speak(164_ms);
                     }
                 }
                 enemy_->draw(*this);
+                if (e_attack) {
+                    enemy_pos = eidle;
+                }
             } else {
                 spawnEnemy();
             }
 
-            if (e_attack) {
-                enemy_pos = eidle;
-            }
             if (q_ != nullptr) {
                 q_->draw(*this);
             }

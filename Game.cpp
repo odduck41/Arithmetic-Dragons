@@ -182,6 +182,7 @@ void gm::Dragon::idle(const Milliseconds& ms) {
     timer_.update();
 
     auto rect = this->model_->getTextureRect();
+    rect.top = 0;
     rect.left = 32 * (idle_ %= 4);
     ++idle_;
 
