@@ -6,11 +6,26 @@
 
 class Text final : public sf::Text {
   public:
+    Text();
     explicit Text(const std::string&, const std::string& = "../textures/monogram.ttf");
   private:
     sf::Font font_;
 };
 
+typedef sf::Text Input;
+
+class Dialog final : public sf::Sprite {
+  public:
+    Dialog();
+    void input(const char&);
+    void setLabel(const std::string&);
+    std::string get_ans() const;
+    void draw(sf::RenderWindow&) const;
+  private:
+    Input input_{};
+    Text label_{};
+    sf::Texture t_{};
+};
 
 class App final : sf::RenderWindow {
   public:
