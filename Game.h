@@ -87,7 +87,7 @@ namespace gm {
         [[nodiscard]] bool isAlive() const;
 
         void damage(const unsigned long long&);
-        void attack(Unit&) const;
+        void give_damage(Unit&) const;
 
         void draw(sf::RenderWindow&) const;
 

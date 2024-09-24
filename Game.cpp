@@ -53,7 +53,7 @@ void gm::Unit::damage(const unsigned long long & damage) {
     this->hp_ -= static_cast<long long>(damage);
 }
 
-void gm::Unit::attack(Unit& other) const {
+void gm::Unit::give_damage(Unit& other) const {
     other.damage(this->attack_);
 }
 

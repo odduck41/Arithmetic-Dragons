@@ -44,7 +44,7 @@ void Dialog::last() {
 }
 
 void Dialog::input(const char& x) {
-    if (x < '0' || '9' < x) return;
+    if (x != '-' && (x < '0' || '9' < x)) return;
     if (input_.getString().getSize() == 7) return;
     input_.setString(input_.getString() + x);
 }
@@ -75,9 +75,14 @@ void App::loop() {
         left,
         right,
         idle,
-        answered
+        attack
     } hero_pos = idle;
 
+    enum {
+        espeak,
+        eattack,
+        eidle
+    } enemy_pos = eidle;
     while (this->isOpen()) {
         while (hero_->isAlive()) {
             sf::Event ev{};
@@ -92,17 +97,28 @@ void App::loop() {
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !dis()) {
                     hero_pos = left;
                 } else if (q_ != nullptr && ev.type == sf::Event::TextEntered) {
+                    hero_pos = idle;
                     q_->input(static_cast<char>(ev.text.unicode));
                 } else if (q_ != nullptr && ev.type == sf::Event::KeyPressed &&
                     sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
-                    q_->last();
-                } else {
                     hero_pos = idle;
+                    q_->last();
+                } else if (q_ != nullptr && ev.type == sf::Event::KeyPressed &&
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+                    if (enemy_->answer(std::stoll(q_->get_ans()))) {
+                        hero_pos = attack;
+                        hero_->give_damage(*enemy_);
+                    } else {
+                        enemy_->give_damage(*hero_);
+                    }
                 }
             }
 
             if (dis() && q_ == nullptr) {
                 question();
+                if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
+                    enemy_pos = espeak;
+                }
             }
 
             if (hero_pos == idle) {
@@ -113,6 +129,8 @@ void App::loop() {
             } else if (hero_pos == right) {
                 hero_->right(41_ms);
                 bg_->right(41_ms);
+            } else {
+                hero_->attack(150_ms);
             }
 
             this->clear();
@@ -120,13 +138,31 @@ void App::loop() {
 
             if (enemy_ != nullptr) {
                 if (dynamic_cast<gm::Red*>(enemy_) != nullptr) {
-                    dynamic_cast<gm::Red*>(enemy_)->idle(150_ms);
+                    if (enemy_pos == eidle) {
+                        dynamic_cast<gm::Red*>(enemy_)->idle(150_ms);
+                    } else {
+                        dynamic_cast<gm::Red*>(enemy_)->attack(150_ms);
+                    }
                 } else if (dynamic_cast<gm::Green*>(enemy_) != nullptr) {
-                    dynamic_cast<gm::Green*>(enemy_)->idle(150_ms);
+                    if (enemy_pos == eidle) {
+                        dynamic_cast<gm::Green*>(enemy_)->idle(150_ms);
+                    } else {
+                        dynamic_cast<gm::Green*>(enemy_)->attack(150_ms);
+                    }
                 } else if (dynamic_cast<gm::Black*>(enemy_) != nullptr) {
-                    dynamic_cast<gm::Black*>(enemy_)->idle(150_ms);
+                    if (enemy_pos == eidle) {
+                        dynamic_cast<gm::Black*>(enemy_)->idle(150_ms);
+                    } else {
+                        dynamic_cast<gm::Black*>(enemy_)->attack(150_ms);
+                    }
                 } else {
-                    dynamic_cast<gm::Troll*>(enemy_)->idle(150_ms);
+                    if (enemy_pos == eidle) {
+                        dynamic_cast<gm::Troll*>(enemy_)->idle(150_ms);
+                    } else if (enemy_pos == eattack) {
+                        dynamic_cast<gm::Troll*>(enemy_)->attack(300_ms);
+                    } else{
+                        dynamic_cast<gm::Troll*>(enemy_)->speak(300_ms);
+                    }
                 }
                 enemy_->draw(*this);
             } else {
