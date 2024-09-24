@@ -11,18 +11,18 @@ float abs(const float& x) {
 
 Text::Text() {
     font_.loadFromFile("../textures/monogram.ttf");
+    this->setFont(font_);
 }
 
 Text::Text(const std::string& text, const std::string& filename) {
     font_.loadFromFile(filename);
     this->setString(text);
-    this->setColor(sf::Color::Black);
     this->setFont(font_);
 }
 
 Dialog::Dialog() {
-    label_.setPosition(this->getPosition() + sf::Vector2f{15, 15});
-    input_.setPosition(this->getPosition() + sf::Vector2f{39, 72});
+    label_.setFillColor(sf::Color::Black);
+    input_.setFillColor(sf::Color::Black);
     t_.loadFromFile("../textures/dialog.png");
     this->setTexture(t_);
 }
@@ -31,14 +31,21 @@ std::string Dialog::get_ans() const {
     return input_.getString();
 }
 
-void Dialog::draw(sf::RenderWindow& window) const {
+void Dialog::draw(sf::RenderWindow& window) {
+    label_.setPosition(this->getPosition() + sf::Vector2f{30, 30});
+    input_.setPosition(this->getPosition() + sf::Vector2f{80, 144});
     window.draw(*this);
     window.draw(label_);
     window.draw(input_);
 }
 
+void Dialog::last() {
+    input_.setString(input_.getString().substring(0, input_.getString().getSize() - 1));
+}
+
 void Dialog::input(const char& x) {
     if (x < '0' || '9' < x) return;
+    if (input_.getString().getSize() == 7) return;
     input_.setString(input_.getString() + x);
 }
 
@@ -84,8 +91,11 @@ void App::loop() {
                     hero_pos = right;
                 } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !dis()) {
                     hero_pos = left;
-                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-                    ;
+                } else if (q_ != nullptr && ev.type == sf::Event::TextEntered) {
+                    q_->input(static_cast<char>(ev.text.unicode));
+                } else if (q_ != nullptr && ev.type == sf::Event::KeyPressed &&
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+                    q_->last();
                 } else {
                     hero_pos = idle;
                 }
@@ -124,7 +134,7 @@ void App::loop() {
             }
 
             if (q_ != nullptr) {
-                this->draw(*q_);
+                q_->draw(*this);
             }
             hero_->draw(*this);
             this->display();
@@ -157,14 +167,14 @@ void App::spawnEnemy() {
     sf::Texture t;
     t.loadFromFile("../textures/dragons/red.png");
 
-    auto red = new gm::Red(gm::Model(t), 100, 20);
+    const auto red = new gm::Red(gm::Model(t), 100, 20);
     t.loadFromFile("../textures/dragons/green_ani.png");
-    auto green = new gm::Green(gm::Model(t), 100, 20);
+    const auto green = new gm::Green(gm::Model(t), 100, 20);
     t.loadFromFile("../textures/dragons/black_ani.png");
-    auto black = new gm::Black(gm::Model(t), 250, 40);
+    const auto black = new gm::Black(gm::Model(t), 250, 40);
 
     t.loadFromFile("../textures/troll.png");
-    auto troll = new gm::Troll(gm::Model(t), 50, 10);
+    const auto troll = new gm::Troll(gm::Model(t), 50, 10);
 
     if (const auto num = gm::generator() % 100; num >= 90) {
         enemy_ = black;
@@ -193,5 +203,7 @@ void App::spawnEnemy() {
 }
 
 void App::question() {
-    q_ = new Text(enemy_->question());
+    q_ = new Dialog;
+    q_->setPosition(enemy_->getPosition().x - 512, enemy_->getPosition().y - 256);
+    q_->setLabel(enemy_->question());
 }

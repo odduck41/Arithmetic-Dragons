@@ -12,7 +12,6 @@ class Text final : public sf::Text {
     sf::Font font_;
 };
 
-typedef sf::Text Input;
 
 class Dialog final : public sf::Sprite {
   public:
@@ -20,9 +19,10 @@ class Dialog final : public sf::Sprite {
     void input(const char&);
     void setLabel(const std::string&);
     std::string get_ans() const;
-    void draw(sf::RenderWindow&) const;
+    void draw(sf::RenderWindow&);
+    void last();
   private:
-    Input input_{};
+    Text input_{};
     Text label_{};
     sf::Texture t_{};
 };
@@ -39,6 +39,6 @@ class App final : sf::RenderWindow {
     gm::smartBg* bg_{};
     gm::Hero* hero_;
     gm::Enemy* enemy_{};
-    Text* q_{};
+    Dialog* q_{};
 };
 
