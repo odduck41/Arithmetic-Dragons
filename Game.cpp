@@ -27,7 +27,7 @@ gm::Model::Model(Model&& other) noexcept {
 }
 
 gm::Model& gm::Model::operator=(Model other) {
-    std::swap(*this, other);
+    swap(*this, other);
     return *this;
 }
 

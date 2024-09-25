@@ -46,6 +46,9 @@ namespace gm {
         Model(Model&&) noexcept;
         Model& operator=(Model);
 
+        friend void swap(Model& a, Model& b) {
+            std::swap(a.texture_, b.texture_);
+        }
         ~Model() override;
       private:
         sf::Texture* texture_{};
