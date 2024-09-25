@@ -50,6 +50,10 @@ void Dialog::input(const char& x) {
 }
 
 void Dialog::setLabel(const std::string& s) {
+    label_.setPosition(this->getPosition() + sf::Vector2f{30, 30});
+    label_.setPosition(this->getPosition() + sf::Vector2f{30, 30});
+    input_.setFillColor(sf::Color::Black);
+    label_.setFillColor(sf::Color::Black);
     label_.setString(s);
 }
 
@@ -131,6 +135,18 @@ void App::loop() {
                 hero_pos = idle;
             }
             if (hattack && dis() && !enemy_->isAlive()) {
+                if (dynamic_cast<gm::Black*>(enemy_) != nullptr) {
+                    if (!dynamic_cast<gm::Black*>(enemy_)->die(40_ms)) goto skip;
+                } else if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
+                    if (!dynamic_cast<gm::Troll*>(enemy_) ->die(40_ms)) goto skip;
+                } else {
+                    if (dynamic_cast<gm::Red*>(enemy_) != nullptr) {
+                        if (!dynamic_cast<gm::Red*>(enemy_)->die(80_ms)) goto skip;
+                    } else {
+                        if (!dynamic_cast<gm::Green*>(enemy_)->die(80_ms)) goto skip;
+                    }
+                };
+                bg_->unfix(*enemy_);
                 delete enemy_;
                 enemy_ = nullptr;
                 enemy_pos = eidle;
@@ -139,7 +155,6 @@ void App::loop() {
                 hero_pos = idle;
                 e_attack = true;
             }
-
             if (hattack && e_attack && dis() && enemy_ != nullptr && q_ == nullptr) {
                 question();
                 if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
@@ -147,6 +162,7 @@ void App::loop() {
                 }
             }
 
+skip:
             if (hero_pos == idle && hattack) {
                 hero_->idle(150_ms);
             } else if (hero_pos == left && hattack) {

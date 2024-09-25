@@ -400,7 +400,11 @@ void gm::smartBg::left(const Milliseconds& ms) {
     }
 
     for (const auto& fixed: fixed_) {
-        fixed->setPosition(fixed->getPosition() + sf::Vector2f(11, 0));
+        if (fixed != nullptr) {
+            fixed->setPosition(fixed->getPosition() + sf::Vector2f(11, 0));
+        } else {
+            fixed_.erase(fixed);
+        }
     }
 }
 
@@ -416,6 +420,8 @@ void gm::smartBg::right(const Milliseconds& ms) {
     for (const auto& fixed: fixed_) {
         if (fixed != nullptr) {
             fixed->setPosition(fixed->getPosition() - sf::Vector2f(11, 0));
+        } else {
+            fixed_.erase(fixed);
         }
     }
 }
@@ -427,6 +433,11 @@ void gm::smartBg::draw(sf::RenderWindow& window) {
 }
 
 void gm::smartBg::fix(Unit& obj) {
-    fixed_.push_back(&obj);
+    fixed_.insert(&obj);
 }
 
+void gm::smartBg::unfix(Unit& el) {
+    if (auto it = fixed_.find(&el); it != fixed_.end()) {
+        fixed_.erase(it);
+    }
+}

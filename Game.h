@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <set>
 
 namespace gm {
 
@@ -198,10 +199,11 @@ namespace gm {
           void right(const Milliseconds&);
           void draw(sf::RenderWindow&);
           void fix(Unit&);
+          void unfix(Unit&);
         private:
           std::vector<sf::Texture> textures{};
           std::vector<sf::Sprite> backgrounds{};
-          std::vector<Unit*> fixed_;
+          std::set<Unit*> fixed_;
           Timer timer_{};
     };
 }
