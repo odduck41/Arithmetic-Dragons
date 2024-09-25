@@ -137,7 +137,7 @@ void App::loop() {
             }
             if (hattack && dis() && !enemy_->isAlive()) {
                 if (dynamic_cast<gm::Black*>(enemy_) != nullptr) {
-                    if (!dynamic_cast<gm::Black*>(enemy_)->die(40_ms)) goto skip;
+                    if (!dynamic_cast<gm::Black*>(enemy_)->die(82_ms)) goto skip;
                 } else if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
                     if (!dynamic_cast<gm::Troll*>(enemy_) ->die(40_ms)) goto skip;
                 } else {
