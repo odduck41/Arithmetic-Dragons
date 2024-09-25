@@ -116,7 +116,7 @@ void App::loop() {
                     q_->last();
                 } else if (q_ != nullptr && ev.type == sf::Event::KeyPressed &&
                     sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-                    if (q_->get_ans()) continue;
+                    if (q_->get_ans().empty()) continue;
                     if (enemy_->answer(std::stoll(q_->get_ans()))) {
                         hero_pos = attack;
                         hattack = false;
