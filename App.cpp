@@ -137,13 +137,17 @@ void App::loop() {
             }
             if (hattack && dis() && !enemy_->isAlive()) {
                 if (dynamic_cast<gm::Black*>(enemy_) != nullptr) {
+                    // DON'T USE GOTO
                     if (!dynamic_cast<gm::Black*>(enemy_)->die(82_ms)) goto skip;
                 } else if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
+                    // DON'T USE GOTO
                     if (!dynamic_cast<gm::Troll*>(enemy_) ->die(40_ms)) goto skip;
                 } else {
                     if (dynamic_cast<gm::Red*>(enemy_) != nullptr) {
+                        // DON'T USE GOTO
                         if (!dynamic_cast<gm::Red*>(enemy_)->die(80_ms)) goto skip;
                     } else {
+                        // DON'T USE GOTO
                         if (!dynamic_cast<gm::Green*>(enemy_)->die(80_ms)) goto skip;
                     }
                 };
@@ -163,7 +167,7 @@ void App::loop() {
                 }
             }
 
-skip:
+        skip:
             if (hero_pos == idle && hattack) {
                 hero_->idle(150_ms);
             } else if (hero_pos == left && hattack) {
