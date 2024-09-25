@@ -62,7 +62,7 @@ namespace gm {
     };
 
     struct IDying {
-        virtual void die(const Milliseconds&) = 0;
+        virtual bool die(const Milliseconds&) = 0;
         virtual ~IDying() = default;
     };
 
@@ -72,12 +72,13 @@ namespace gm {
     };
 
     struct IAttacker {
-        virtual void attack(const Milliseconds&) = 0;
+        virtual bool attack(const Milliseconds&) = 0;
         virtual ~IAttacker() = default;
     };
 
     class Unit {
       public:
+        Unit() = default;
         explicit Unit(Model, long long = 100, long long = 20,
            sf::IntRect = {0, 0, 32, 32});
 
@@ -86,13 +87,14 @@ namespace gm {
         [[nodiscard]] bool isAlive() const;
 
         void damage(const unsigned long long&);
-        void attack(Unit&) const;
+        void give_damage(Unit&) const;
 
         void draw(sf::RenderWindow&) const;
 
         [[nodiscard]] sf::Vector2f getPosition() const;
         void setPosition(const float&, const float&) const;
         void setPosition(const sf::Vector2f&) const;
+        [[nodiscard]] long long HP() const;
 
         virtual ~Unit();
 
@@ -106,6 +108,7 @@ namespace gm {
 
     class Hero final : public Unit, IIdler, IRunner, IDying, IAttacker {
       public:
+        Hero() = default;
         explicit Hero(Model, long long = 100, long long = 20,
                       sf::IntRect = {0, 0, 32, 32});
         [[nodiscard]] bool isEnemy() const override;
@@ -113,8 +116,8 @@ namespace gm {
         void idle(const Milliseconds&) override;
         void left(const Milliseconds&) override;
         void right(const Milliseconds&) override;
-        void die(const Milliseconds&) override;
-        void attack(const Milliseconds&) override;
+        bool die(const Milliseconds&) override;
+        bool attack(const Milliseconds&) override;
       private:
         int idle_{};
         int run_{};
@@ -139,8 +142,8 @@ namespace gm {
       public:
         explicit Dragon(Model, long long, long long);
         void idle(const Milliseconds&) override;
-        void die(const Milliseconds&) override;
-        void attack(const Milliseconds &) override;
+        bool die(const Milliseconds&) override;
+        bool attack(const Milliseconds &) override;
       protected:
         long long a{};
         long long b{};
@@ -165,7 +168,7 @@ namespace gm {
         explicit Black(Model, long long, long long);
         std::string question() override;
         [[nodiscard]] bool answer(long long) const override;
-        void die(const Milliseconds&) override;
+        bool die(const Milliseconds&) override;
     };
 
     class Troll final : public Enemy, ISpeaker {
@@ -175,9 +178,9 @@ namespace gm {
         [[nodiscard]] bool answer(long long) const override;
 
         void idle(const Milliseconds&) override;
-        void die(const Milliseconds&) override;
+        bool die(const Milliseconds&) override;
         void speak(const Milliseconds&) override;
-        void attack(const Milliseconds&) override;
+        bool attack(const Milliseconds&) override;
       private:
         enum {
           guessing = 0,
