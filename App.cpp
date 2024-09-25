@@ -99,9 +99,9 @@ void App::loop() {
                     return;
                 }
                 if (!e_attack || !hattack) break;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !dis()) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
                     hero_pos = right;
-                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !dis()) {
+                } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
                     hero_pos = left;
                 } else if (q_ != nullptr && ev.type == sf::Event::TextEntered) {
                     hero_pos = idle;
@@ -123,17 +123,24 @@ void App::loop() {
                     }
                     delete q_;
                     q_ = nullptr;
+                } else {
+                    hero_pos = idle;
                 }
             }
-            if (hattack && enemy_ != nullptr && !enemy_->isAlive()) {
+            if (dis() && hattack) {
+                hero_pos = idle;
+            }
+            if (hattack && dis() && !enemy_->isAlive()) {
                 delete enemy_;
                 enemy_ = nullptr;
                 enemy_pos = eidle;
                 delete q_;
                 q_ = nullptr;
                 hero_pos = idle;
+                e_attack = true;
             }
-            if (hattack && e_attack && dis() && q_ == nullptr) {
+
+            if (hattack && e_attack && dis() && enemy_ != nullptr && q_ == nullptr) {
                 question();
                 if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
                     enemy_pos = espeak;
@@ -149,11 +156,12 @@ void App::loop() {
                 hero_->right(41_ms);
                 bg_->right(41_ms);
             } else {
-                hattack = hero_->attack(150_ms);
+                hattack = hero_->attack(75_ms);
+                if (hattack) {
+                    hero_pos = idle;
+                }
             }
-            if (hattack) {
-                hero_pos = idle;
-            }
+
 
             hero_hp.setString(std::to_string(hero_->HP()));
             this->clear();
@@ -190,7 +198,11 @@ void App::loop() {
                 }
                 enemy_->draw(*this);
                 if (e_attack) {
-                    enemy_pos = eidle;
+                    if (dynamic_cast<gm::Troll*>(enemy_) != nullptr) {
+                        enemy_pos = espeak;
+                    } else {
+                        enemy_pos = eidle;
+                    }
                 }
             } else {
                 spawnEnemy();
@@ -199,12 +211,14 @@ void App::loop() {
             if (q_ != nullptr) {
                 q_->draw(*this);
             }
+
             hero_->draw(*this);
 
             this->draw(hero_hp);
             if (dis()) {
                 this->draw(enemy_hp);
             }
+
             this->display();
         }
 
@@ -212,6 +226,7 @@ void App::loop() {
             this->close();
             return;
         }
+
         this->clear();
         bg_->draw(*this);
         if (enemy_ != nullptr) {

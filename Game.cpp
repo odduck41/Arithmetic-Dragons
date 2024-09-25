@@ -414,7 +414,9 @@ void gm::smartBg::right(const Milliseconds& ms) {
     }
 
     for (const auto& fixed: fixed_) {
-        fixed->setPosition(fixed->getPosition() - sf::Vector2f(11, 0));
+        if (fixed != nullptr) {
+            fixed->setPosition(fixed->getPosition() - sf::Vector2f(11, 0));
+        }
     }
 }
 
