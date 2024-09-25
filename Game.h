@@ -94,6 +94,7 @@ namespace gm {
         [[nodiscard]] sf::Vector2f getPosition() const;
         void setPosition(const float&, const float&) const;
         void setPosition(const sf::Vector2f&) const;
+        [[nodiscard]] long long HP() const;
 
         virtual ~Unit();
 

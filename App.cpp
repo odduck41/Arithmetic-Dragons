@@ -84,6 +84,11 @@ void App::loop() {
         eidle
     } enemy_pos = eidle;
     bool hattack = true, e_attack = true;
+    Text hero_hp, enemy_hp;
+    hero_hp.setFillColor(sf::Color::White);
+    enemy_hp.setFillColor(sf::Color::White);
+    hero_hp.setPosition(10, 10);
+    enemy_hp.setPosition(870, 10);
     while (this->isOpen()) {
         while (hero_->isAlive()) {
             sf::Event ev{};
@@ -150,10 +155,12 @@ void App::loop() {
                 hero_pos = idle;
             }
 
+            hero_hp.setString(std::to_string(hero_->HP()));
             this->clear();
             bg_->draw(*this);
 
             if (enemy_ != nullptr) {
+                enemy_hp.setString(std::to_string(enemy_->HP()));
                 if (dynamic_cast<gm::Red*>(enemy_) != nullptr) {
                     if (enemy_pos == eidle) {
                         dynamic_cast<gm::Red*>(enemy_)->idle(150_ms);
@@ -193,6 +200,11 @@ void App::loop() {
                 q_->draw(*this);
             }
             hero_->draw(*this);
+
+            this->draw(hero_hp);
+            if (dis()) {
+                this->draw(enemy_hp);
+            }
             this->display();
         }
 
@@ -215,6 +227,11 @@ void App::loop() {
             enemy_->draw(*this);
         }
         hero_->draw(*this);
+
+        this->draw(hero_hp);
+        if (dis()) {
+            this->draw(enemy_hp);
+        }
         this->display();
     }
 }

@@ -73,6 +73,10 @@ void gm::Unit::setPosition(const sf::Vector2f& pos) const {
     this->model_->setPosition(pos);
 }
 
+long long gm::Unit::HP() const {
+    return hp_;
+}
+
 gm::Unit::~Unit() {
     delete model_;
 }
