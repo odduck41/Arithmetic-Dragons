@@ -5,4 +5,4 @@ Written with SFML.
 
 ❗ Don't try to understand what happens in App::loop... This was hardcoded at 4 a.m.\
 
-// DON NOT USE GOTO
+// DO NOT USE GOTO
